@@ -1,20 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
 
-    struct kupon
+    struct olusankupon
     {
-        public  short hata;
-        public oynanacak LastValue;
+        public short hata;
+        public Sonuc[] kupon;
     };
 
 
     [Flags]
-    public  enum ikili:short
+
+
+    public enum Sonuc : byte
+    {
+        bos = 0x0,
+        m1 = 0x1,
+        m0 = 0x2,
+        m2 = 0x4,
+        m10 = m1 | m0, m01 = m1 | m0,
+        m02 = m2 | m0, m20 = m2 | m0,
+        m12 = m1 | m2, m21 = m1 | m2,
+        m102 = m1 | m0 | m2,
+    }
+
+
+    [Flags]
+    public enum ikili : short
     {
         // Decimal     // Binary
-        sbos= 0,
+        sbos = 0,
         s11 = 1,        // 00000000
         s10 = 2,        // 00000001
         s12 = 4,        // 00000010
@@ -26,46 +43,134 @@ namespace ConsoleApp1
         s22 = 256,      // 10000000
 
     }
+
     class Program
     {
-       
 
-        
+        static List<int> hatalar;
+        static List<List<int[,]>> tumfiltreler;
+        static int[] currkupon;
+
 
         static void Main(string[] args)
         {
 
-            short[] hatalar= new short[] { 0, 1, 2, 3, 4 };
-            ikili[] myarray = new ikili[105];
+            hatalar = new List<int>();
+            tumfiltreler = new List<List<int[,]>>();
 
-            short[,] codes = new short[105,2]{
-               {1,2},{1,3},{1,4},{1,5},{1,6},{1,7},{1,8},{1,9},{1,10},{1,11},{1,12},{1,13},{1,14},{1,15},
-               {2,3},{2,4},{2,5},{2,6},{2,7},{2,8},{2,9},{2,10},{2,11},{2,12},{2,13},{2,14},{2,15},
-               {3,4},{3,5},{3,6},{3,7},{3,8},{3,9},{3,10},{3,11},{3,12},{3,13},{3,14},{3,15},
-               {4,5},{4,6},{4,7},{4,8},{4,9},{4,10},{4,11},{4,12},{4,13},{4,14},{4,15},
-               {5,6},{5,7},{5,8},{5,9},{5,10},{5,11},{5,12},{5,13},{5,14},{5,15},
-               {6,7},{6,8},{6,9},{6,10},{6,11},{6,12},{6,13},{6,14},{6,15},
-               {7,8},{7,9},{7,10},{7,11},{7,12},{7,13},{7,14},{7,15},
-               {8,9},{8,10},{8,11},{8,12},{8,13},{8,14},{8,15},
-               {9,10},{9,11},{9,12},{9,13},{9,14},{9,15},
-               {10,11},{10,12},{10,13},{10,14},{10,15},
-               {11,12},{11,13},{11,14},{11,15},
-               {12,13},{12,14},{12,15},
-               {13,14},{13,15},
-               {14,15}};
-
-
-            myarray[104] = (ikili)7;
-            foreach (var item in myarray)
+            currkupon = new int[15];
+            for (int i = 0; i < 15; i++)
             {
-                Console.WriteLine(item.ToString());
+                Console.WriteLine(currkupon[i]);
             }
 
+            Console.ReadLine();
+            hatalar.Add(0);
 
-                   Console.ReadLine();
-
+            var sira1 = new List<int[,]>();
+            var sira2 = new List<int[,]>();
+            var sira3 = new List<int[,]>();
+            var sira4 = new List<int[,]>();
+            var sira5 = new List<int[,]>();
+            var sira6 = new List<int[,]>();
+            var sira7 = new List<int[,]>();
+            var sira8 = new List<int[,]>();
+            var sira9 = new List<int[,]>();
+            var sira10 = new List<int[,]>();
+            var sira11 = new List<int[,]>();
+            var sira12 = new List<int[,]>();
+            var sira13 = new List<int[,]>();
+            var sira14 = new List<int[,]>();
 
             
+
+            tumfiltreler.Add(sira1);
+            tumfiltreler.Add(sira2);
+            tumfiltreler.Add(sira3);
+            tumfiltreler.Add(sira4);
+            tumfiltreler.Add(sira5);
+            tumfiltreler.Add(sira6);
+            tumfiltreler.Add(sira7);
+            tumfiltreler.Add(sira8);
+            tumfiltreler.Add(sira9);
+            tumfiltreler.Add(sira10);
+            tumfiltreler.Add(sira11);
+            tumfiltreler.Add(sira12);
+            tumfiltreler.Add(sira13);
+            tumfiltreler.Add(sira14);
+
+            int max = 14;
+
+            for (int i = 0; i < 14; i++)
+            {
+
+                for (int a = 0; a < max - i; a++)
+                {
+                    int[,] f = new int[3, 3];
+              
+                    
+                    
+                    tumfiltreler[i].Add(f);
+
+                    
+
+                }
+
+                
+
+            }
+
+            tumfiltreler[0][0][0, 0] = 1;
+
+            int s0= Kuponsayi(0, 0,0);
+            int s1 = Kuponsayi(0, 1,0);
+            int s2 = Kuponsayi(0, 2,0);
+
+            Console.WriteLine(s0+s1+s2);
+
+            Console.ReadLine();
+
+
+
         }
+
+        static int Kuponsayi(int level,int sonuc,int hatasayisi) {
+
+            if (level == 14)
+            {
+                return 1;
+            }
+
+            currkupon[level] = sonuc;
+
+            for (int i = 0; i < level-1; i++)
+            {
+                if (tumfiltreler[i][level-i-1][currkupon[i],sonuc]==1)
+                {
+                    hatasayisi++;
+                }
+            }
+
+            if (!hatalar.Contains(hatasayisi))
+            {
+                return 0;
+            }
+
+         
+            
+
+            int s0 = Kuponsayi(level+1, 0, hatasayisi);
+            int s1 = Kuponsayi(level+1, 1, hatasayisi);
+            int s2 = Kuponsayi(level+1, 2, hatasayisi);
+
+
+            return s0 + s1 + s2;
+
+
+          
+            
+        }
+
+
     }
 }
